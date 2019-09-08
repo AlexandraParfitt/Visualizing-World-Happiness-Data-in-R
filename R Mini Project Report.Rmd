@@ -1,0 +1,220 @@
+---
+title: 'R Mini-Project #1'
+author: "Alexandra Parfitt"
+date: "April 15, 2019"
+output: ms_word: default
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(readr)
+library(tidyverse)
+library(ggplot2)
+setwd("~/Stat Programming/R Documents")
+library(readxl)
+World_Happiness_Data_2018 <- read_excel("World Happiness Data 2018.xlsx")
+attach(World_Happiness_Data_2018)
+happy17 <- filter(World_Happiness_Data_2018, year==2017)
+head(happy17)
+```
+
+##1) Below is a histogram of the Year variable. 
+It appears that only about 25 observations were made in 2005, but by 2011 the researchers were collecting close to 145 observations every year.
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+ggplot(World_Happiness_Data_2018, aes(year)) + geom_bar(fill="purple") + labs(title="Number of Observations Per Year", subtitle = "Source: World Happiness Dataset", x="Year", y="Number of Observations") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+
+```
+
+2a. The distribution of the happiness variable appears to be quad-modal. There were four peaks regardless of when I set the bins at 20 or 30. It appears to be centered around 5.5, with most of the data spread between 4 and 7.5, and some outliers around 2.5 (Afghanistan, South Sudan, and Yemen, unsurprisingly). The higher clump around 7.5 seems too numerous to be outliers and is made up of Scandinavian countries. The dataset does not say whether this is a mean, a median, or some other measure. I'd like to know more about how it was calculated.
+```{r echo=FALSE, message=FALSE}
+ggplot(happy17, aes(Happiness)) + geom_histogram(fill="red") + labs(title="Distribution of Happiness Variable", x="Answer to Survey Question Imagining a Ladder of Happiness from 0 to 10", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+The distribution of Log GDP Per Capita is left-skewed and roughly unimodal. The median appears to be about 9, and the range is from around 6.2 to 13. The graph points to income inequality around the globe, since taking the log already linearizes a skewed distribution. I made the bins wider in this graph to see the overall distribution better.
+```{r echo=FALSE}
+ggplot(happy17, aes(LogGDPPerCapita)) + geom_histogram(fill="dark green", bins=10) + labs(title="Distribution of Log GDP Per Capita Variable", x="Log of GDP Per Capita", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+The distribution of Social Support is left-skewed and trimodal, that is, it has three humps. It has peaks at 0.7, 0.8, and 0.9. There are some outliers at 0.3 (Central African Republic, home to ongoing civil war, Benin, and Afghanistan)
+```{r echo=FALSE}
+ggplot(happy17, aes(SocialSupport)) + geom_histogram(fill="dark blue", bins=20) + labs(title="Distribution of Social Support", x="Social Support", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+The distribution of Healthy Life Expectancy at Birth appears roughly left-skewed and trimodal with three humps. The peaks are at 52, 65, and 75. They might correspond to first, second, and third world countries. There are some outliers around 40 that include Sierra Leone, CAR, Nigeria, and Chad. The takeaway is to avoid living in a developing country with ongoing civil war.
+```{r echo=FALSE}
+ggplot(happy17, aes(HealthyLifeExpectancyAtBirth)) + geom_histogram(fill="pink", bins=30) + labs(title="Distribution of Healthy Life Expectancy at Birth Variable", x="Healthy Life Expectancy", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+The distribution of the Freedom to Make Life Choices variable resembles the Social Support variable with an overall left skew and three humps at 0.6, 0.75 and 0.9. These variables might be correlated.
+```{r echo=FALSE}
+ggplot(happy17, aes(FreedomToMakeLifeChoices)) + geom_histogram(fill="light blue", bins=30) + labs(title="Distribution of Freedom to Make Life Choices Variable", x="Freedom to Make Life Choices, as Measured by Survey Question", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+
+```
+The generosity variable seems slightly right-skewed and trimodal with three peaks at -0.15, 0.03, and 0.10. It is likely right-skewed because ethe variable is a residual of national average to the question if you have donated money to charity or not.
+```{r echo=FALSE}
+ggplot(happy17, aes(Generosity)) + geom_histogram(fill="orange", bins=30) + labs(title="Distribution of Generosity Variable", x="Generosity, as Measured by Survey Question", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+
+```
+The perceptions of corruption variable is left-skewed and largely unimodal. It has a long tail of outliers.
+```{r echo=FALSE}
+ggplot(happy17, aes(PerceptionsOfCorruption)) + geom_histogram(fill="brown", bins=30) + labs(title="Distribution of Perceptions of Corruption Variable", x="Perceptions of Corruption", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+The positive affect variable is slightly left-skewed and bimodal, with a peak at around 0.62 and a flatter peak between 0.75 and 0.85. It has outliers around 0.45 (Tunisia, Turkey, Yemen, Afghanistan) and around 0.9 (Iceland). I notice that many of the countries that are low outliers have significant Muslim populations, which makes me wonder about religious or cultural bias in the question.
+```{r echo=FALSE, message=FALSE}
+ggplot(happy17, aes(PositiveAffect)) + geom_histogram(fill="yellow", bins=30) + labs(title="Distribution of Positive Affect Variable", x="Positive Affect", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+The negative effect variable is slightly right-skewed and trimodal, with humps at 0.2 and 0.3, and a smaller hump at 0.38. There are outliers around 0.5 and 0.6
+```{r echo=FALSE}
+ggplot(happy17, aes(NegativeAffect)) + geom_histogram(fill="gray", bins=30) + labs(title="Distribution of Negative Affect Variable", x="Negative Affect", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+The confidence in national government variable is unimodal and somewhat right-skewed, with a peak around 0.45. There are some outliers at around 0.12, namely, Ukraine, Bosnia and Herzogovina, and Moldova. I made the bins larger in this graph because I thought it showed the distribution more accurately.
+```{r echo=FALSE}
+ggplot(happy17, aes(ConfidenceInNationalGovernment)) + geom_histogram(fill="blue", bins=20) + labs(title="Confidence in National Government Variable", x="Confidence in National Government", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+The Gini index average is somewhat right skewed with two peaks, one around 0.35 and one at 0.4. There is a long tail to the right with clumbs of outliers around 0.48 (Mexico, Nicaragua, Congo) and 0.65 (Botswana, Namibia, and South Africa)
+
+```{r echo=FALSE}
+ggplot(happy17, aes(GINIIndexAverage)) + geom_histogram(fill="green", bins=30) + labs(title="Distribution of Gini Index Average Variable", x="GINI Index Average", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+The Gini Index Gallup variable has a bimodal distribution, with peaks at 0.42 and 0.58. It has outliers around 0.72 (CAR, South Sudan, Niger) and 0.85 (Iran).
+```{r echo=FALSE}
+ggplot(happy17, aes(GiniIndexGallup)) + geom_histogram(fill="purple", bins=30) + labs(title="Distribution of Gini Index Gallup Variable", x="GINI Index Gallup", y="Count") + theme(plot.title = element_text(hjust = 0.5))
+```
+##2b. Scatterplots. In sum, Log GDP, Social Support, and Healthy Life Expectancy at Birth have the most linear relationships with the outcome variable, Happiness.
+The scatterplot of Happiness vs. Log GDP Per Capita show a linear trend, although there is a lot of variation between 9 and 10 log GDP per capita. The R-squared of the least-squares regression line, the red line, is 0.607.
+
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=LogGDPPerCapita, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Log GDP Per Capita", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Log GDP Per Capita", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+
+```
+The scatterplot of happiness score vs. social support seems much less linear to me. The R-squared of the least-squares regression line, the red line, is 0.49. I might try an exponential curve with this variable.
+```{r, echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=SocialSupport, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Social Support", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Social Support", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. healthy life expectancy at birth seems weakly linear to me. The points aren't evenly scattered across the range of x values, they are clumped around 65 and 75. The R-squared of the least-squares regression line, the red line, is 0.533.
+```{r, echo=FALSE}
+ggplot(happy17, aes(x=HealthyLifeExpectancyAtBirth, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Healthy Life Expectancy at Birth", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Healthy Life Expectancy at Birth", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. freedom to make life choices is not very linear. The dots are scattered pretty widely from the regression lines. The R-squared of the least-squares regression line, the red line, is 0.2767.
+```{r, echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=FreedomToMakeLifeChoices, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Freedom to Make Life Choices", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Freedom to Make Life Choices", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. generosity is not at all linear. The loess line in blue is pulled by various outliers. The R-squared of the least-squares regression line, the red line, is 0.042. Don't tell my former colleagues in fundraising!
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=Generosity, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Generosity", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Generosity", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. perceptions of corruption does not show a linear relationship between the variables. The dots are far from both the loess and least-squares regression lines between 0.6 and 0.8. The R-squared of the regression line is 0.18.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=PerceptionsOfCorruption, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Perceptions of Corruption", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Perceptions of Corruption", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. positive affect does not show a strong linear relationship between the variables. The R-squared of the least-squares regression line is 0.307.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=PositiveAffect, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Positive Affect", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Positive Affect", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. negative affect does not show a strong linear relationship between the variables. The R-squared of the least-squares regression line is 0.071.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=NegativeAffect, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Negative Affect", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Negative Affect", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. confidence in national government is dramatic! There is very little evidence of a linear relationship between the variables. The R-squared of the least-squares regression line is 0.0073.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=ConfidenceInNationalGovernment, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Confidence in National Government", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Confidence in National Government", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. Gini Index Average shows very little evidence of a linear relationship. The R-squared of the least-squares regression line is 0.0298.
+```{r echo= FALSE, warning=FALSE}
+ggplot(happy17, aes(x=GINIIndexAverage, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Gini Index Average", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Gini Index Average", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+```
+The scatterplot of happiness score vs. Gini Index Gallup shows little evidence of a linear relationship. The points are scatteed like buckshot. The R-squared of the least-squares regression line is 0.0865.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=GiniIndexGallup, y=Happiness)) + geom_point() + labs(title="Happiness Score vs. Gini Index Gllup", subtitle="Red is Least Squares Line, Blue is Loess Fit", x="Gini Index Gallup", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5), plot.subtitle=element_text(hjust = 0.5)) + geom_smooth(color="blue") + geom_smooth(method="lm", color="red")
+
+```
+
+##c.Create a new variable called Social Support Category.
+The distribution seems correct since half will be above and half will be below the median.
+```{r eval=TRUE, warning=FALSE}
+happy17$SocialSupportCategory <- factor(
+  ifelse(happy17$SocialSupport <= median(happy17$SocialSupport, na.rm = TRUE), 0, 
+         ifelse(happy17$SocialSupport > median(happy17$SocialSupport, na.rm = TRUE), 1, NA)), 
+  0:1, labels = c("low", "high"))
+ggplot(happy17, aes(happy17$SocialSupportCategory)) + geom_bar() + labs(title="Distribution of Social Support Category", x="Social Support Category", y="Count")
+
+```
+
+##d. Produce a scatterplot of Happiness as y, Log GDP per Capita as x, and Social Support Category as color. Do the same for Perceptions of Corruption.
+It appears that happiness and log GDP per capita have a linear relationship, and that Social Support Category acts as an interaction term. The presence of Social Support enhances the effect of Log GDP per Capita and increases the slope of the regression line.
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=LogGDPPerCapita, y=Happiness, color=SocialSupportCategory)) + geom_point() + labs(title="Happiness Score vs. Log GDP Per Capita", x="Log GDP per Capita", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth() + geom_smooth(method="lm")
+```
+As perceptions of corruption increase, happiness score decreases. However, this linear relationship is much stronger for countries with high levels of Social Support. For countries with low levels of Social Support, as perceptions of corruption increase, happiness score increases. As the social fabric weakens, perceptions of corruption bother people less. 
+```{r echo=FALSE, warning=FALSE}
+ggplot(happy17, aes(x=PerceptionsOfCorruption, y=Happiness, color=SocialSupportCategory)) + geom_point() + labs(title="Happiness Score vs. Perceptions of Corruption", x="Perceptions of Corruption", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth() + geom_smooth(method="lm")
+```
+##3. 5 Countries of interest
+#a.
+I picked the United States and France since I have lived in those countries. I picked Greece, Ireland, and Portugal because those countries were hard-hit by the Great Recession and I wanted to see the effect that had on happiness scores. The impact on Greece was dramatic, as shown by the dip in the loess and least-squares line for that country (in olive green, appropriately). The United States and Ireland are closely correlated. France is parallel to the US and Ireland, but the intercept for that line is significantly below the US and Ireland, perhaps providing insight into the Yellow Vest protests. The trend for Portugal seems somewhat impacted by the Great Recession, but Portugal has perhaps recovered. This graph is interesting because the loess lines provide insight that the least-squares lines don't, since we are interested in the impact of a few points (2008, 2009, 2010) on the overall trend.
+```{r echo=FALSE, warning=FALSE}
+happy5 <- filter(World_Happiness_Data_2018, country %in% c("France", "United States", "Greece", "Ireland", "Portugal"))
+ggplot(happy5, aes(x=year, y=Happiness, color=country)) + geom_point() + labs(title="Happiness Score vs. Year", x="Year", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth() + geom_smooth(method="lm") + scale_x_continuous(labels=c("2005", "2008", "2010", "2012", "2014", "2016"))
+```
+#b.In France, Greece, Ireland, Portugal and the United States, log GDP per capita and positive affect have the most linear relationship with happiness. Log GDP per capita and positive affect may have a linear relationship. 
+I plotted happiness score vs. log GDP per capita for the 2017 data. The relationship seems closer to exponential than linear to me. There isn't enough data in the middle of the x-range to establish a clear relationship. 
+```{r echo=FALSE, warning=FALSE}
+happy5_17 <-filter(happy5, year==2017)
+ggplot(happy5_17, aes(x=LogGDPPerCapita, y=Happiness, color=country, label=country)) + geom_point(size=5) + labs(title="Happiness Score vs. Log GDP Per Capita", x="Log GDP Per Capita", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_text(nudge_x=0.1)
+  
+   
+```
+
+Here is a plot of happiness score vs. social support for five countries in 2017. The relationship does not look linear.
+```{r echo=FALSE}
+ggplot(happy5_17, aes(x=SocialSupport, y=Happiness, color=country, label=country)) + geom_point(size=5) + labs(title="Happiness Score vs. Social Support", x="Social Support", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth() + geom_smooth(method="lm") + geom_text(nudge_x=0.02) 
+
+
+```
+Life expectancy at birth because that was strongly correlated within the overall dataset. Within these five countries in 2017, however, we do not see a linear correlation. 
+```{r, echo=FALSE}
+
+ggplot(happy5_17, aes(x=HealthyLifeExpectancyAtBirth, y=Happiness, color=country, label=country)) + geom_point(size=5) + labs(title="Happiness Score vs. Healthy Life Expectancy at Birth", x="Life Expectancy", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_text(nudge_y=0.09) 
+```
+While this relationship was not linear in the overall dataset, for these five countries it appeared pretty linear.
+```{r echo=FALSE}
+ggplot(happy5_17, aes(x=PositiveAffect, y=Happiness, color=country, label=country)) + geom_point(size=4) + labs(title="Happiness Score vs. Positive Affect", x="Positive Affect", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_text(nudge_y=0.2)
+
+```
+
+Corruption does not appear to have a linear relationship with these five countries in 2017.
+
+```{r, echo=FALSE}
+ggplot(happy5_17, aes(x=PerceptionsOfCorruption, y=Happiness, color=country, label=country)) + geom_point() + labs(title="Happiness Score vs. Perceptions of Corruption", x="Perceptions of Corruption", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_text(nudge_y=0.1)
+```
+#4. Favorite graph.
+My favorite graph is a scatterplot of Happiness vs. Log GDP with various regions in different colors. I looked at the countries that made up the different distributions of the Happiness variable histogram and saw the Scandinavia formed a consistent cluster of outliers around 7.5. In the middle, there was another consistent cluster around 6.0 of the Persian Gulf, Spain, Italy, Eastern Europe, and South America. I wanted to look at some of those countries, and I chose the Persian Gulf/Middle East region. I did want to break out Syria, Yemen, and Iraq, because of their ongoing conflict. I also wanted to look at Africa, because it was consistently in the 4.5 region of the happiness variable histogram.
+
+It was interesting to see how for Subsaharan Africa and WarPersianGulf, the points were much more spread out, leading to lines with higher slopes. In the developed world, since life is more stable, the points are relatively stable clusters. I wonder if you could argue that Subsaharan Africa and WarPersianGulf follow pretty much the same patterns; a fair number of purple dots are mixed in with the green dots and the confidence intervals for the regression lines overlap. The takeaway is that a small increase in GDP provides substantial benefits for people in the developing world.
+```{r echo=FALSE}
+#subsetting Scandinavia and creating a label
+happy_scandinavia <-filter(World_Happiness_Data_2018, country %in% c("Denmark", "Iceland", "Sweden", "Finland"))
+happy_scandinavia$region="Scandinavia"
+#subsetting Persian Gulf and creating a label
+happy_persiangulf <-filter(World_Happiness_Data_2018, country %in% c("Bahrain", "Saudi Arabia", "United Arab Emirates", "Kuwait"))
+happy_persiangulf$region="Peaceful Persian Gulf: Bahrain, Saudi Arabia, UAE, Kuwait"
+unhappy_persiangulf <-filter(World_Happiness_Data_2018, country %in% c("Iraq", "Syria","Yemen"))
+unhappy_persiangulf$region="WarPersianGulf: Iraq, Syria, Yemen"
+happy_US <- filter(World_Happiness_Data_2018, country=="United States")
+happy_US$region="United States"
+#subsetting Africa and creating a label
+happy_africa <- filter(World_Happiness_Data_2018, country %in% c("Botswana", "Burkina Faso", "Burundi", "Cameroon", "Central African Republic", "Chad", "Congo (Brazzaville)", "Congo (Kinshasa)", "Gabon", "Ghana", "Guinea", "Ivory Coast", "Kenya", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mauritania", "Mauritius", "Mozambique", "Namibia", "Nigeria", "Rwanda", "Senegal", "Sierra Leone", "Somalia", "South Africa"))
+happy_africa$region="Subsaharan Africa"
+#creating new dataframes
+happy_region <-rbind(happy_scandinavia, happy_persiangulf, happy_US, unhappy_persiangulf)
+happy_region_with_africa <-rbind(happy_region, happy_africa)
+#plotting the regions on GDP per capita
+ggplot(happy_region_with_africa, aes(x=LogGDPPerCapita, y=Happiness, color=region)) + labs(title="Happiness Score vs. Log GDP Per Capita", x="Log GDP Per Capita", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_point() + geom_smooth() + geom_smooth(method="lm")
+#plotting the regions on Life Expectancy
+#ggplot(happy_region_with_africa, aes(x=HealthyLifeExpectancyAtBirth, y=Happiness, color=region)) + labs(title="Happiness Score vs. Healthy Life Expectancy at Birth", x="Healthy Life Expectancy at Birth", y="Happiness Score") + theme(plot.title = element_text(hjust = 0.5)) + geom_point()+geom_smooth()+geom_smooth(method = "lm")
+```
